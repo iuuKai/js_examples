@@ -6,10 +6,10 @@
 	<script type="text/javascript">
 		// 定义超级引用类型
 		function SuperType(n) {
-			// 定义实例属性和方法【独立性】
+			// 定义实例属性
 			this.num = n;
 		}
-		
+
 		// 父类原型方法无法被 call() 继承，需要修复
 		SuperType.prototype.changeBy = function (val) {
 			this.num += val;
