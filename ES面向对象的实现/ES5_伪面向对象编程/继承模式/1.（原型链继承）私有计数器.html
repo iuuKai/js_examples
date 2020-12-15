@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script type="text/javascript">
+		// 定义超级引用类型
+		function SuperType(n) {
+			// 定义实例属性和方法【独立性】
+			this.num = n;
+			this.changeBy = function(val) {
+				this.num += val;
+			}
+		}
+
+		// prototype(原型属性) 定义共享的方法
+		SuperType.prototype.add = function(val) {
+			this.changeBy(1);
+		};
+		SuperType.prototype.red = function(val) {
+			this.changeBy(-1);
+		};
+		SuperType.prototype.value = function(val) {
+			return this.num;
+		};
+		
+
+		// 定义空的子引用类型（属性和方法完全继承父类，也可新增）
+		function SubType() {}
+
+		// SubType 的 prototype(原型属性)，继承 SuperType 的原型成员和实例成员
+		SubType.prototype = new SuperType(0);
+
+		// 执行操作
+		function event(ele, btn1, btn2, obj) {
+			btn1.onclick = function() {
+				obj.add();
+				ele.innerHTML = obj.value();
+			}
+			btn2.onclick = function() {
+				obj.red();
+				ele.innerHTML = obj.value();
+			}
+			ele.innerHTML = obj.value();
+		}
+
+		window.onload = function() {
+			// 计数器 1
+			var Counter1 = new SubType();
+			var add1 = document.getElementById('add1');
+			var red1 = document.getElementById('red1');
+			var demo1 = document.getElementById('demo1');
+			event(demo1, add1, red1, Counter1);
+
+			// 计数器 2
+			var Counter2 = new SubType();
+			var add2 = document.getElementById('add2');
+			var red2 = document.getElementById('red2');
+			var demo2 = document.getElementById('demo2');
+			event(demo2, add2, red2, Counter2);
+		}
+	</script>
+</head>
+<body>
+	<h3>原型链继承</h3>
+	<hr />
+	<p>计数器 1</p>
+	<input type="button" id="add1" value="自增 (+1)" />
+	<input type="button" id="red1" value="自减 (-1)" />
+	<p id="demo1"></p>
+	<hr />
+	<p>计数器 2</p>
+	<input type="button" id="add2" value="自增 (+1)" />
+	<input type="button" id="red2" value="自减 (-1)" />
+	<p id="demo2"></p>
+</body>
+</html>

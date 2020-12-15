@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script type="text/javascript">
+		// 定义对象字面量
+		var makeCounter = {
+			num : 0,
+			changeBy : function(val) {
+				this.num += val;
+			},
+			add : function() {
+				this.changeBy(1);
+			},
+			red : function() {
+				this.changeBy(-1);
+			},
+			value : function() {
+				return this.num;
+			}
+		};
+
+		// 创建对元素进行类型判断的函数
+		function getType(obj) {
+			// tostring会返回对应不同的标签的构造函数
+			var _toString = Object.prototype.toString;
+			var map = {
+				'[object Boolean]' : 'boolean',
+				'[object Number]' : 'number',
+				'[object String]' : 'string',
+				'[object Function]' : 'function',
+				'[object Array]' : 'array',
+				'[object Date]' : 'date',
+				'[object RegExp]' : 'regExp',
+				'[object Undefined]' : 'undefined',
+				'[object Null]' : 'null',
+				'[object Object]' : 'object'
+			};
+			if (obj instanceof Element) {
+				return 'element';
+			}
+			return map[_toString.call(obj)];
+		}
+
+		// 深度优先深度克隆， 利用栈的方式实现
+		// 解决【递归、对象环、边界处理（比如函数，Set等）、防栈溢出】问题
+		function deepClone(obj) {
+			var type = getType(obj);
+			var objClone = {};
+			// 用于存储复制过程中访问过的对象的队列，避免对象环的问题
+			var visitQueue = [];
+			if (type === 'array' || type === 'object') {
+				var index = visitQueue.indexOf(obj);
+				if (index > -1){
+					objClone = visitQueue[index]
+				} else {
+					visitQueue.push(obj);
+					for (var key in obj) {
+						objClone[key] = deepClone(obj[key], visitQueue);
+					}
+				}
+
+			} else if (type === 'function') {
+				// 处理函数
+				objClone = eval( '(' + obj.toString() + ')');
+			} else {
+				// 处理原始值
+				objClone = obj;
+			}
+
+			// 返回深度克隆后的对象
+			return objClone;
+		}
+
+		// 执行操作
+		function event(ele, btn1, btn2, obj) {
+			btn1.onclick = function() {
+				obj.add();
+				ele.innerHTML = obj.value();
+			}
+			btn2.onclick = function() {
+				obj.red();
+				ele.innerHTML = obj.value();
+			}
+			ele.innerHTML = obj.value();
+		}
+
+		window.onload = function() {
+			// 计数器 1
+			var Counter1 = deepClone(makeCounter);
+			var add1 = document.getElementById('add1');
+			var red1 = document.getElementById('red1');
+			var demo1 = document.getElementById('demo1');
+			event(demo1, add1, red1, Counter1);
+
+			// 计数器 2
+			var Counter2 = deepClone(makeCounter);
+			var add2 = document.getElementById('add2');
+			var red2 = document.getElementById('red2');
+			var demo2 = document.getElementById('demo2');
+			event(demo2, add2, red2, Counter2);
+		}
+	</script>
+</head>
+<body>
+	<h3>【DFS】树深度优先遍历（二）</h3>
+	<hr />
+	<p>计数器 1</p>
+	<input type="button" id="add1" value="自增 (+1)" />
+	<input type="button" id="red1" value="自减 (-1)" />
+	<p id="demo1"></p>
+	<hr />
+	<p>计数器 2</p>
+	<input type="button" id="add2" value="自增 (+1)" />
+	<input type="button" id="red2" value="自减 (-1)" />
+	<p id="demo2"></p>
+</body>
+</html>

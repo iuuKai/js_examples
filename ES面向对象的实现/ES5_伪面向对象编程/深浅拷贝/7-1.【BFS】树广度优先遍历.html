@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script type="text/javascript">
+		// 定义对象字面量
+		var makeCounter = {
+			num : 0,
+			changeBy : function(val) {
+				this.num += val;
+			},
+			add : function() {
+				this.changeBy(1);
+			},
+			red : function() {
+				this.changeBy(-1);
+			},
+			value : function() {
+				return this.num;
+			}
+		};
+
+		// 广度优先深度克隆， 利用队列的方式实现
+		// 利用objClone建立一个与原对象相同的数据结构， 遇到可处理的值（比如原始值，函数，就处理后赋值到相应的节点下）
+		function deepClone(obj) {
+			var objClone = {};
+
+			// 进队列
+			var originQueue = [obj];
+
+			// 同时objClone也跟着一起进队列
+			var copyQueue = [objClone];
+
+			// 以下两个队列用来保存复制过程中访问过的对象，以此来避免对象环的问题（对象的某个属性值是对象本身）
+			var visitQueue = [];
+			var copyVisitQueue = [];
+
+			while (originQueue.length > 0) {
+				var _obj = copyQueue.shift();
+				var _data = originQueue.shift();
+				copyVisitQueue.push(_obj);
+				visitQueue.push(_data);
+				for (var k in _data) {
+					var _value = _data[k];
+					if (typeof _value !== 'object') {
+						_obj[k] = _value;
+					} else {
+						// 使用indexOf可以发现数组中是否存在相同的对象(实现indexOf的难点就在于对象比较)
+						var index = visitQueue.indexOf(_value);
+						if (index >= 0) {
+							// 出现环的情况不需要再取出遍历
+							_obj[k] = copyVisitQueue[index];
+						} else {
+							originQueue.push(_value);
+							_obj[k] = {};
+							copyQueue.push(_obj[k]);
+						}
+					}
+				}
+			}
+
+			// 返回深度克隆后的对象
+			return objClone;
+		}
+
+		// 执行操作
+		function event(ele, btn1, btn2, obj) {
+			btn1.onclick = function() {
+				obj.add();
+				ele.innerHTML = obj.value();
+			}
+			btn2.onclick = function() {
+				obj.red();
+				ele.innerHTML = obj.value();
+			}
+			ele.innerHTML = obj.value();
+		}
+
+		window.onload = function() {
+			// 计数器 1
+			var Counter1 = deepClone(makeCounter);
+			var add1 = document.getElementById('add1');
+			var red1 = document.getElementById('red1');
+			var demo1 = document.getElementById('demo1');
+			event(demo1, add1, red1, Counter1);
+
+			// 计数器 2
+			var Counter2 = deepClone(makeCounter);
+			var add2 = document.getElementById('add2');
+			var red2 = document.getElementById('red2');
+			var demo2 = document.getElementById('demo2');
+			event(demo2, add2, red2, Counter2);
+		}
+	</script>
+</head>
+<body>
+	<h3>【BFS】树广度优先遍历（一）</h3>
+	<hr />
+	<p>计数器 1</p>
+	<input type="button" id="add1" value="自增 (+1)" />
+	<input type="button" id="red1" value="自减 (-1)" />
+	<p id="demo1"></p>
+	<hr />
+	<p>计数器 2</p>
+	<input type="button" id="add2" value="自增 (+1)" />
+	<input type="button" id="red2" value="自减 (-1)" />
+	<p id="demo2"></p>
+</body>
+</html>

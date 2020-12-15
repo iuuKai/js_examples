@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script type="text/javascript">
+		// 定义超级引用类型
+		function SuperType(n) {
+			// 定义实例属性和方法【独立性】
+			this.num = n;
+			this.changeBy = function(val) {
+				this.num += val;
+			}
+		}
+
+		// prototype(原型属性) 定义共享的方法
+		SuperType.prototype.add = function() {
+			this.changeBy(1);
+		};
+		SuperType.prototype.red = function() {
+			this.changeBy(-1);
+		};
+
+		// 定义子引用类型
+		function SubType(n) {
+			// 借用构造函数继承父类实例属性及方法，还可以给父类的构造函数传递参数
+			SuperType.call(this, n);
+
+			// 可新增实例属性和方法【独立性】
+		}
+
+		// 1.同时继承了基类的原型成员和实例成员，但这样写会使父类构造函数执行两次，毕竟 call() 已继承父类实例成员
+		// SubType.prototype = new SuperType();
+
+		// 2.只继承基类的原型成员，而不继承实例成员。这样是最合理的，并且父类构造函数也只执行一次
+		SubType.prototype = SuperType.prototype;
+
+		// 让 SubType 的构造函数重新指回这个类本身，否则的话它会变成 SuperType 构造函数
+		SubType.prototype.constructor = SubType;
+
+		// 在新原型上，新增共享的方法（先继承，再新增）【可用父类原型定义，也可在子类原型新增】
+		SubType.prototype.value = function() {
+			return this.num;
+		};
+
+		// 执行操作
+		function event(ele, btn1, btn2, obj) {
+			btn1.onclick = function() {
+				obj.add();
+				ele.innerHTML = obj.value();
+			}
+			btn2.onclick = function() {
+				obj.red();
+				ele.innerHTML = obj.value();
+			}
+			ele.innerHTML = obj.value();
+		}
+
+		window.onload = function() {
+			// 计数器 1
+			var Counter1 = new SubType(0);
+			var add1 = document.getElementById('add1');
+			var red1 = document.getElementById('red1');
+			var demo1 = document.getElementById('demo1');
+			event(demo1, add1, red1, Counter1);
+			
+			// 计数器 2
+			var Counter2 = new SubType(0);
+			var add2 = document.getElementById('add2');
+			var red2 = document.getElementById('red2');
+			var demo2 = document.getElementById('demo2');
+			event(demo2, add2, red2, Counter2);
+		}
+	</script>
+</head>
+<body>
+	<h3>组合继承</h3>
+	<hr />
+	<p>计数器 1</p>
+	<input type="button" id="add1" value="自增 (+1)" />
+	<input type="button" id="red1" value="自减 (-1)" />
+	<p id="demo1"></p>
+	<hr />
+	<p>计数器 2</p>
+	<input type="button" id="add2" value="自增 (+1)" />
+	<input type="button" id="red2" value="自减 (-1)" />
+	<p id="demo2"></p>
+</body>
+</html>

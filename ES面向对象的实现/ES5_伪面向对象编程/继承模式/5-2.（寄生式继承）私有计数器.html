@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script type="text/javascript">
+		// 定义对象字面量
+		var makeCounter = {
+			add : function() {
+				this.changeBy(1);
+			},
+			red : function() {
+				this.changeBy(-1);
+			},
+			value : function() {
+				return this.num;
+			}
+		};
+
+		// 将原型式继承再次封装【类似工厂模式】
+		function createObj(o, n) {
+			// 通过调用函数创建一个新对象
+			var clone = Object.create(o);
+
+			// 通过给实例对象扩展属性和方法来增强这个实例对象【子类实例独有，可传参】
+			clone.num = n;
+			clone.changeBy = function(val) {
+				clone.num += val;
+			}
+
+			// 返回新对象
+			return clone;
+		}
+
+		// 执行操作
+		function event(ele, btn1, btn2, obj) {
+			btn1.onclick = function() {
+				obj.add();
+				ele.innerHTML = obj.value();
+			}
+			btn2.onclick = function() {
+				obj.red();
+				ele.innerHTML = obj.value();
+			}
+			ele.innerHTML = obj.value();
+		}
+
+		window.onload = function() {
+			// 计数器 1
+			var Counter1 = createObj(makeCounter, 0);
+			var add1 = document.getElementById('add1');
+			var red1 = document.getElementById('red1');
+			var demo1 = document.getElementById('demo1');
+			event(demo1, add1, red1, Counter1);
+
+			// 计数器 2
+			var Counter2 = createObj(makeCounter, 0);
+			var add2 = document.getElementById('add2');
+			var red2 = document.getElementById('red2');
+			var demo2 = document.getElementById('demo2');
+			event(demo2, add2, red2, Counter2);
+		}
+	</script>
+</head>
+<body>
+	<h3>"Object.create()" 实现寄生式继承</h3>
+	<hr />
+	<p>计数器 1</p>
+	<input type="button" id="add1" value="自增 (+1)" />
+	<input type="button" id="red1" value="自减 (-1)" />
+	<p id="demo1"></p>
+	<hr />
+	<p>计数器 2</p>
+	<input type="button" id="add2" value="自增 (+1)" />
+	<input type="button" id="red2" value="自减 (-1)" />
+	<p id="demo2"></p>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script type="text/javascript">
+		// 定义对象字面量
+		var makeCounter = {
+			num : 0,
+			changeBy : function(val) {
+				this.num += val;
+			},
+			add : function() {
+				this.changeBy(1);
+			},
+			red : function() {
+				this.changeBy(-1);
+			},
+			value : function() {
+				return this.num;
+			}
+		};
+
+		// 封装深拷贝函数
+		function deepClone(obj) {
+			// 通过调用函数创建一个以指定对象的原型为模板的新对象
+			var copy = Object.create(Object.getPrototypeOf(obj));
+
+			// 利用数组的 “Array.prototype.forEach” 方法进行复制，实现深拷贝
+			var propNames = Object.getOwnPropertyNames(obj);
+			propNames.forEach(function(name) {
+
+				// 获取指定对象上一个自有属性对应的属性描述符。
+				var desc = Object.getOwnPropertyDescriptor(obj, name);
+
+				// 直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。
+				Object.defineProperty(copy, name, desc);
+			});
+
+			return copy;
+		}
+
+		// 执行操作
+		function event(ele, btn1, btn2, obj) {
+			btn1.onclick = function() {
+				obj.add();
+				ele.innerHTML = obj.value();
+			}
+			btn2.onclick = function() {
+				obj.red();
+				ele.innerHTML = obj.value();
+			}
+			ele.innerHTML = obj.value();
+		}
+
+		window.onload = function() {
+			// 计数器 1
+			var Counter1 = deepClone(makeCounter);
+			var add1 = document.getElementById('add1');
+			var red1 = document.getElementById('red1');
+			var demo1 = document.getElementById('demo1');
+			event(demo1, add1, red1, Counter1);
+
+			// 计数器 2
+			var Counter2 = deepClone(makeCounter);
+			var add2 = document.getElementById('add2');
+			var red2 = document.getElementById('red2');
+			var demo2 = document.getElementById('demo2');
+			event(demo2, add2, red2, Counter2);
+		}
+	</script>
+</head>
+<body>
+	<h3>【ES5】Object.create()方法</h3>
+	<hr />
+	<p>计数器 1</p>
+	<input type="button" id="add1" value="自增 (+1)" />
+	<input type="button" id="red1" value="自减 (-1)" />
+	<p id="demo1"></p>
+	<hr />
+	<p>计数器 2</p>
+	<input type="button" id="add2" value="自增 (+1)" />
+	<input type="button" id="red2" value="自减 (-1)" />
+	<p id="demo2"></p>
+</body>
+</html>

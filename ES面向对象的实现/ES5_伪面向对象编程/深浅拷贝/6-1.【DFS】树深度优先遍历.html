@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script type="text/javascript">
+		// 定义对象字面量
+		var makeCounter = {
+			num : 0,
+			changeBy : function(val) {
+				this.num += val;
+			},
+			add : function() {
+				this.changeBy(1);
+			},
+			red : function() {
+				this.changeBy(-1);
+			},
+			value : function() {
+				return this.num;
+			}
+		};
+
+		// 深度优先深度克隆， 利用栈的方式实现
+		// 防栈溢出
+		function deepClone(obj) {
+			var objClone = {};
+
+			// 栈
+			var loopList = [{
+				parent: objClone,
+				key: undefined,
+				data: obj,
+			}];
+
+			while (loopList.length) {
+				// 深度优先
+				var node = loopList.pop();
+				var parent = node.parent;
+				var key = node.key;
+				var data = node.data;
+
+				// 初始化赋值目标，key为undefined则拷贝到父元素，否则拷贝到子元素
+				var res = parent;
+				if (typeof key !== 'undefined') {
+					res = parent[key] = {};
+				}
+				for (var k in data) {
+					if (data.hasOwnProperty(k)) {
+						if (typeof data[k] === 'object') {
+							// 下一次循环
+							loopList.push({
+								parent : res,
+								key : k,
+								data : data[k],
+							});
+						} else {
+							res[k] = data[k];
+						}
+					}
+				}
+			}
+
+			// 返回深度克隆后的对象
+			return objClone;
+		}
+
+		// 执行操作
+		function event(ele, btn1, btn2, obj) {
+			btn1.onclick = function() {
+				obj.add();
+				ele.innerHTML = obj.value();
+			}
+			btn2.onclick = function() {
+				obj.red();
+				ele.innerHTML = obj.value();
+			}
+			ele.innerHTML = obj.value();
+		}
+
+		window.onload = function() {
+			// 计数器 1
+			var Counter1 = deepClone(makeCounter);
+			var add1 = document.getElementById('add1');
+			var red1 = document.getElementById('red1');
+			var demo1 = document.getElementById('demo1');
+			event(demo1, add1, red1, Counter1);
+
+			// 计数器 2
+			var Counter2 = deepClone(makeCounter);
+			var add2 = document.getElementById('add2');
+			var red2 = document.getElementById('red2');
+			var demo2 = document.getElementById('demo2');
+			event(demo2, add2, red2, Counter2);
+		}
+	</script>
+</head>
+<body>
+	<h3>【DFS】树深度优先遍历（一）</h3>
+	<hr />
+	<p>计数器 1</p>
+	<input type="button" id="add1" value="自增 (+1)" />
+	<input type="button" id="red1" value="自减 (-1)" />
+	<p id="demo1"></p>
+	<hr />
+	<p>计数器 2</p>
+	<input type="button" id="add2" value="自增 (+1)" />
+	<input type="button" id="red2" value="自减 (-1)" />
+	<p id="demo2"></p>
+</body>
+</html>
