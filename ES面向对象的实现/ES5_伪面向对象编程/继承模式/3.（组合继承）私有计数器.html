@@ -8,12 +8,12 @@
 		function SuperType(n) {
 			// 定义实例属性和方法【独立性】
 			this.num = n;
-			this.changeBy = function(val) {
-				this.num += val;
-			}
 		}
 
 		// prototype(原型属性) 定义共享的方法
+		SuperType.prototype.changeBy = function (val) {
+			this.num += val;
+		};
 		SuperType.prototype.add = function() {
 			this.changeBy(1);
 		};
@@ -25,8 +25,6 @@
 		function SubType(n) {
 			// 借用构造函数继承父类实例属性及方法，还可以给父类的构造函数传递参数
 			SuperType.call(this, n);
-
-			// 可新增实例属性和方法【独立性】
 		}
 
 		// 1.同时继承了基类的原型成员和实例成员，但这样写会使父类构造函数执行两次，毕竟 call() 已继承父类实例成员

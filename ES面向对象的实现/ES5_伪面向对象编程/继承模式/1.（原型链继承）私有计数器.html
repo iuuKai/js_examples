@@ -8,22 +8,21 @@
 		function SuperType(n) {
 			// 定义实例属性和方法【独立性】
 			this.num = n;
-			this.changeBy = function(val) {
-				this.num += val;
-			}
 		}
 
 		// prototype(原型属性) 定义共享的方法
-		SuperType.prototype.add = function(val) {
+		SuperType.prototype.changeBy = function (val) {
+			this.num += val;
+		};
+		SuperType.prototype.add = function() {
 			this.changeBy(1);
 		};
-		SuperType.prototype.red = function(val) {
+		SuperType.prototype.red = function() {
 			this.changeBy(-1);
 		};
-		SuperType.prototype.value = function(val) {
+		SuperType.prototype.value = function() {
 			return this.num;
 		};
-		
 
 		// 定义空的子引用类型（属性和方法完全继承父类，也可新增）
 		function SubType() {}

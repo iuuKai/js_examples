@@ -8,19 +8,23 @@
 		function SuperType(n) {
 			// 定义实例属性和方法【独立性】
 			this.num = n;
-			this.changeBy = function(val) {
-				this.num += val;
-			};
 		}
-		// 警告：父类的原型方法不能被 call() 继承，只能将方法写在函数内（成为父类实例方法，或在子类原型新增）
-
+		
+		// 父类原型方法无法被 call() 继承，需要修复
+		SuperType.prototype.changeBy = function (val) {
+			this.num += val;
+		};
+		
 		// 定义子引用类型
 		function SubType(n) {
 			// 借用构造函数继承父类实例属性及方法，还可以给父类的构造函数传递参数
 			SuperType.call(this, n);
-
-			// 可新增实例属性和方法【独立性】
 		}
+
+		// 修复，继承父类的原型方法
+		SubType.prototype = Object.create(SuperType.prototype);
+		// 修复 constructor 指向
+		SubType.prototype.constructor = SuperType;
 
 		// 在新原型上，新增共享的方法
 		SubType.prototype.add = function() {
