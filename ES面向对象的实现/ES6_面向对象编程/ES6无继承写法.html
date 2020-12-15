@@ -40,7 +40,7 @@
 		}
 
 		// 执行操作
-		function event(ele, btn1, btn2, obj) {
+		function action(ele, btn1, btn2, obj) {
 			btn1.onclick = function() {
 				obj.add();
 				ele.innerHTML = obj.value();
@@ -58,14 +58,14 @@
 			var add1 = document.getElementById('add1');
 			var red1 = document.getElementById('red1');
 			var demo1 = document.getElementById('demo1');
-			event(demo1, add1, red1, Counter1);
+			action(demo1, add1, red1, Counter1);
 
 			// 计数器 2
 			var Counter2 = new MakeCounter(0);
 			var add2 = document.getElementById('add2');
 			var red2 = document.getElementById('red2');
 			var demo2 = document.getElementById('demo2');
-			event(demo2, add2, red2, Counter2);
+			action(demo2, add2, red2, Counter2);
 		}
 	</script>
 </body>

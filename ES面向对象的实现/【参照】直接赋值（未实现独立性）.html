@@ -20,28 +20,9 @@
 				return this.num;
 			}
 		};
-		/*
-			// 等同使用构造函数来创建实例对象
-			function MakeCounter() {
-				this.num = 0;
-				this.changeBy = function(val) {
-					this.num += val;
-				};
-				this.add = function() {
-					this.changeBy(1);
-				};
-				this.red = function() {
-					this.changeBy(-1);
-				};
-				this.value = function() {
-					return this.num;
-				};
-			}
-			var makeCounter = new MakeCounter(0);
-		 */
 
 		// 执行操作
-		function event(ele, btn1, btn2, obj) {
+		function action(ele, btn1, btn2, obj) {
 			btn1.onclick = function() {
 				obj.add();
 				ele.innerHTML = obj.value();
@@ -59,15 +40,14 @@
 			var add1 = document.getElementById('add1');
 			var red1 = document.getElementById('red1');
 			var demo1 = document.getElementById('demo1');
-			event(demo1, add1, red1, Counter1);
-
+			action(demo1, add1, red1, Counter1);
 			
 			// 计数器 2
 			var Counter2 = makeCounter;
 			var add2 = document.getElementById('add2');
 			var red2 = document.getElementById('red2');
 			var demo2 = document.getElementById('demo2');
-			event(demo2, add2, red2, Counter2);
+			action(demo2, add2, red2, Counter2);
 		}
 	</script>
 </head>
