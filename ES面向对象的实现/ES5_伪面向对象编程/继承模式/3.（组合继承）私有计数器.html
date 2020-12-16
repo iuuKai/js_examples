@@ -10,15 +10,9 @@
 			this.num = n;
 		}
 
-		// prototype(原型属性) 定义共享的方法
+		// 超类原型方法无法被 call() 继承，需要修复
 		SuperType.prototype.changeBy = function (val) {
 			this.num += val;
-		};
-		SuperType.prototype.add = function() {
-			this.changeBy(1);
-		};
-		SuperType.prototype.red = function() {
-			this.changeBy(-1);
 		};
 
 		// 定义子引用类型
@@ -32,11 +26,16 @@
 
 		// 2.只继承基类的原型成员，而不继承实例成员。这样是最合理的，并且父类构造函数也只执行一次
 		SubType.prototype = SuperType.prototype;
-
 		// 让 SubType 的构造函数重新指回这个类本身，否则的话它会变成 SuperType 构造函数
 		SubType.prototype.constructor = SubType;
 
 		// 在新原型上，新增共享的方法（先继承，再新增）【可用父类原型定义，也可在子类原型新增】
+		SubType.prototype.add = function() {
+			this.changeBy(1);
+		};
+		SubType.prototype.red = function() {
+			this.changeBy(-1);
+		};
 		SubType.prototype.value = function() {
 			return this.num;
 		};
